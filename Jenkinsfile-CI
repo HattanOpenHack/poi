@@ -22,7 +22,7 @@ stages
     {
       steps
       {
-        sh "docker build -t ${env.ACR_ENDPOINT}/jenkins/api-poi:${BUID_TAG} $WORKSPACE/apis/poi"
+        sh "docker build -t ${env.ACR_ENDPOINT}/jenkins/api-poi:${BUID_TAG} ."
       }
     }
     stage('push') {
