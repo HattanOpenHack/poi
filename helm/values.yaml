@@ -4,7 +4,7 @@
 
 replicaCount: 2
 repository:
-  image: openhackff78acr.azurecr.io/devopsoh/api-poi
+  image: dayonersdemo.azurecr.io/jenkins/api-poi
   tag: latest
   pullPolicy: Always
 image:
