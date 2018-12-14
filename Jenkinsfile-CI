@@ -31,7 +31,7 @@ stages
         sh  "docker push ${env.ACR_ENDPOINT}/jenkins/api-poi:${BUID_TAG}"
       }
     }
-    
+
     stage('Helm Install'){
           steps{
             sh "helm version --client"
@@ -56,7 +56,7 @@ post {
     echo 'Post Build Results'
     script {
       properties([[$class: 'GithubProjectProperty',
-                projectUrlStr: 'https://github.com/HattanOpenHack/openhack-devops-team']])
+                projectUrlStr: 'https://github.com/HattanOpenHack/poi']])
     }
    step([$class: 'GitHubIssueNotifier',
         issueAppend: true,
