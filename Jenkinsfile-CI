@@ -1,0 +1,60 @@
+pipeline{
+      agent  { node { label 'master' } }
+      environment {
+        BUID_TAG = "poipr${env.BUILD_NUMBER}"
+      }
+stages
+{
+    stage('setup')
+    {
+      steps
+      {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding',
+        credentialsId: 'acr-creds',
+        usernameVariable: 'ACR_USER',
+        passwordVariable: 'ACR_PASSWORD']])
+        {
+          sh  "docker login ${env.ACR_ENDPOINT} -u '${ACR_USER}' -p '${ACR_PASSWORD}'"
+        }   
+      }
+    }
+    stage('build')
+    {
+      steps
+      {
+        sh "docker build -t ${env.ACR_ENDPOINT}/jenkins/api-poi:${BUID_TAG} $WORKSPACE/apis/poi"
+      }
+    }
+    stage('push') {
+      steps
+      {
+        sh  "docker push ${env.ACR_ENDPOINT}/jenkins/api-poi:${BUID_TAG}"
+      }
+    }
+
+    stage('Helm Install'){
+      steps{
+        sh "export KUBECONFIG=/home/jenkins/.kube/config"
+        sh "helm version --client"
+        sh "helm version"
+        echo "build tag is ${BUID_TAG}" 
+        sh "helm upgrade --install api-poi $WORKSPACE/apis/poi/helm  --namespace default --set repository.image=${env.ACR_ENDPOINT}/jenkins/api-poi --set repository.tag=${BUID_TAG} --set rollingUpdate.maxUnavailablePercentage='0%' --set rollingUpdate.maxSurgePercentage='10%' --set env.webServerBaseUri=${dnsUrl} --set ingress.rules.endpoint.host=${dnsUrl}"
+      }
+    }        
+}
+
+post { 
+  always { 
+    echo 'Post Build Results'
+    script {
+      properties([[$class: 'GithubProjectProperty',
+                projectUrlStr: 'https://github.com/HattanOpenHack/openhack-devops-team']])
+    }
+   step([$class: 'GitHubIssueNotifier',
+        issueAppend: true,
+        issueLabel: '',
+        issueTitle: '$JOB_NAME $BUILD_DISPLAY_NAME failed'])
+        }
+    }
+
+}
