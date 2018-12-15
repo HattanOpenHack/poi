@@ -45,26 +45,6 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 1
         env:
-          - name: SQL_USER
-            valueFrom:
-              secretKeyRef:
-                name: sql
-                key: sql_user
-          - name: SQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: sql
-                key: sql_password
-          - name: SQL_SERVER
-            valueFrom:
-              secretKeyRef:
-                name: sql
-                key: sql_server
-          - name: SQL_DBNAME
-            valueFrom:
-              secretKeyRef:
-                name: sql
-                key: sql_dbname
           - name: WEB_SERVER_BASE_URI
             value: 'http://0.0.0.0'
           - name: WEB_PORT
