@@ -9,8 +9,8 @@ spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     rollingUpdate:
-      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailablePercentage}}
-      maxSurge: {{ .Values.rollingUpdate.maxSurgePercentage}}
+      maxUnavailable: 0
+      maxSurge: 1
     type: RollingUpdate  
   selector:
     matchLabels:
