@@ -9,7 +9,8 @@ spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     rollingUpdate:
-      maxUnavailable: 0
+      minReadySeconds: 5
+      maxUnavailable: 2
       maxSurge: 1
     type: RollingUpdate  
   selector:
