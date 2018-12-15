@@ -35,7 +35,8 @@ spec:
             name: https
             protocol: TCP        
         livenessProbe:
-          tcpSocket:
+          httpGet:
+            path: /api/healthcheck/poi
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 1
