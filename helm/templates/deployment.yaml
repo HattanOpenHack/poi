@@ -8,7 +8,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     rollingUpdate:
-      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailablePercentage}}
+      maxUnavailable: 0%
       maxSurge: {{ .Values.rollingUpdate.maxSurgePercentage}}
     type: RollingUpdate  
   selector:
