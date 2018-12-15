@@ -5,14 +5,7 @@ metadata:
   labels:
     deploy: {{ .Values.image.label }}
 spec:
-  progressDeadlineSeconds: 60
   replicas: {{ .Values.replicaCount }}
-  strategy:
-    rollingUpdate:
-      minReadySeconds: 5
-      maxUnavailable: 0
-      maxSurge: 2
-    type: RollingUpdate  
   selector:
     matchLabels:
       app: {{ .Values.image.label }}
@@ -24,28 +17,26 @@ spec:
       containers:
       - image: "{{ .Values.repository.image }}:{{ .Values.repository.tag }}"
         imagePullPolicy: {{ .Values.repository.pullPolicy }}
-        imagePullSecrets:
-          - name: regcred
         name: {{ .Values.image.name }}
+         livenessProbe:
+           httpGet:
+             path: /api/healthcheck/poi
+             port: {{ .Values.image.containerPort }}
+           initialDelaySeconds: 10
+           periodSeconds: 30
+         readinessProbe:
+           httpGet:
+             path: /api/healthcheck/poi
+             port: {{ .Values.image.containerPort }}
+           initialDelaySeconds: 5
+           periodSeconds: 5
         ports:
           - containerPort: {{ .Values.image.containerPort }}
             name: http
             protocol: TCP
           - containerPort: 443
             name: https
-            protocol: TCP        
-        livenessProbe:
-          httpGet:
-            path: /api/healthcheck/poi
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 1
-        readinessProbe:
-          httpGet:
-            path: /api/healthcheck/poi
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 1
+            protocol: TCP
         env:
           - name: WEB_SERVER_BASE_URI
             value: 'http://0.0.0.0'
