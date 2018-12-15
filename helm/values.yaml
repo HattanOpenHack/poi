@@ -19,7 +19,7 @@ ingress:
     kubernetes.io/ingress.class: traefik
   rules:
     endpoint:
-      host: openhackff78aks.eastus.cloudapp.azure.com
+      host: poi.hattan.io
       paths:
       - path: /api/poi
         serviceName: api-poi-svc
